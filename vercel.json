@@ -4,11 +4,7 @@
       "src": "FS/wsgi.py",
       "use": "@ardnt/vercel-python-wsgi"
     },
-    "config"
-    :
-    {
-      "runtime": "python3.11"
-    }
+
   ],
   "routes": [
     {
