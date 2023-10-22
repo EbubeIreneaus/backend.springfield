@@ -26,5 +26,5 @@ class Transaction(models.Model):
                                                         ('completed', 'completed')], default='pending')
 
     def __str__(self):
-        return self.profile.user.first_name +" "+self.profile.user.last_name+" "+ self.plan+' '+self.type+" "+\
+        return self.profile.user.first_name +" "+self.profile.user.last_name+" "+ str(self.amount)+' '+self.type+" "+\
             self.progress

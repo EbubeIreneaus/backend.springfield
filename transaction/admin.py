@@ -4,7 +4,7 @@ from .models import Transaction
 
 
 class transAdmin(admin.ModelAdmin):
-    list_display = ('profile', 'type', 'plan', 'channel','progress')
+    list_display = ('profile', 'type', 'plan', 'amount', 'channel','progress')
 
 
 admin.site.register(Transaction, transAdmin)
