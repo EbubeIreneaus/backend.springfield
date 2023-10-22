@@ -3,6 +3,7 @@ from authentication.models import Profile
 from .serializers import accountSerialize
 from.models import Account
 from django.http import JsonResponse
+from authentication.serializers import profileSerial
 # Create your views here.
 
 def accountDetails(request, userId):

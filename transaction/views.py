@@ -11,13 +11,13 @@ from .serializers import transactionSerializer as ts
 def validate_deposit(amount, plan):
     if not amount or amount == '' or amount is None or not plan or plan == '' or plan is None:
         return False
-    if (amount >= 50 and amount <= 349) and plan != 'bronze':
+    if (50 <= amount <= 349) and plan != 'bronze':
         return False
-    if (amount >= 350 and amount <= 899) and plan != 'silver':
+    if (350 <= amount <= 899) and plan != 'silver':
         return False
-    if (amount >= 900 and amount <= 4999) and plan != 'gold':
+    if (900 <= amount <= 4999) and plan != 'gold':
         return False
-    if (amount >= 5000 and amount <= 14999) and plan != 'estate':
+    if (5000 <= amount <= 14999) and plan != 'estate':
         return False
     return True
 

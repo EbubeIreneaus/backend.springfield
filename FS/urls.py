@@ -27,3 +27,6 @@ urlpatterns = [
     path('account/', include('account.urls')),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+admin.site.site_header = 'My admin'
+admin.site.site_title = "Spring Field Investment"
+admin.site.index_title = "Admin Spring Field Investment"
