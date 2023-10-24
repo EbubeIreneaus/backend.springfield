@@ -9,7 +9,7 @@ from authentication.serializers import profileSerial
 def accountDetails(request, userId):
 
     try:
-        account = Account.objects.get(profile__user__id = userId)
+        account = Account.objects.get(profile__id = userId)
         serialized_account = accountSerialize(account)
         return JsonResponse(serialized_account.data, safe=False)
     except Account.DoesNotExist:

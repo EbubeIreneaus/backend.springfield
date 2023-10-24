@@ -21,7 +21,7 @@ class Transaction(models.Model):
     address = models.CharField(max_length=150, null=True)
     start_date = models.DateTimeField(null=True)
     end_date = models.DateTimeField(null=True)
-    status = models.IntegerField(max_length=1, default=0)
+    status = models.IntegerField(default=0)
     progress = models.CharField(max_length=12, choices=[('pending','pending'),('active','active'),
                                                         ('completed', 'completed')], default='pending')
 

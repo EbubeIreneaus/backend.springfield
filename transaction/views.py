@@ -71,7 +71,7 @@ class Transactions(APIView):
 
         try:
             try:
-                profile = Profile.objects.get(user__id=data['userId'])
+                profile = Profile.objects.get(id=data['userId'])
             except Profile.DoesNotExist:
                 return JsonResponse({'status': 'failed', 'code': 'user_not_found'})
             if 'plan' in data:
@@ -93,7 +93,7 @@ class Transactions(APIView):
     def get(self, request):
         userId = request.GET.get('userId')
         try:
-            transactions = Transaction.objects.filter(profile__user__id=userId)
+            transactions = Transaction.objects.filter(profile__id=userId)
             st = ts(transactions, many=True)
             return JsonResponse(st.data, safe=False)
         except Exception as e:
