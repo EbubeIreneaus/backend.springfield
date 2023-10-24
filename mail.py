@@ -12,7 +12,7 @@ class Mail:
 		send_mail(
 			subject= self.subject,
 			message= self.message,
-			from_email='service@springfieldinvest.com',
+			from_email='springfieldinvest<springfieldinvesment@gmail.com>',
 			recipient_list= self.recipient,
 			fail_silently=self.silent_fail,
 			html_message=self.html_message

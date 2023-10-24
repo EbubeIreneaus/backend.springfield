@@ -54,18 +54,20 @@ def resend_link(request):
 							'If the button does not work, you can also copy and paste the following link into ' \
 							'your browser: </p ><p> {link} </p ><p> We are excited ' \
 							'to have you on board! </p></div>' \
-							'</div>'.format(link=f'https://springfieldinvest.com/auth/verify/{key}')
+							'</div>'.format(link=f'https://springfieldinvest.com/auth/verify/{profile.id}')
 		mail.send_mail()
 	except Exception as e:
-		pass
-	return JS({'status': 'success', 'userId': profile.id, 'key': key})
+		return HR(str(e))
+	return JS({'status': 'success', 'userId': profile.id})
 
 @csrf_exempt
 def verify_account(request):
 	data = json.loads(request.body)
-	userId = data['userId']
+	userId = data['key']
 	try:
 		profile = Profile.objects.get(id = userId)
+		if profile.verified:
+			return JS({'status':'failed'})
 		profile.verified = True
 		profile.save()
 		return JS({'status':'success'})

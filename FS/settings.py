@@ -96,7 +96,7 @@ DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
 #         'NAME': BASE_DIR / 'db.sqlite3',
-# 
+#
 #     }
 # }
 # Password validation
@@ -123,7 +123,7 @@ EMAIL_PORT = 465
 EMAIL_HOST_USER = os.getenv('EMAIL_USER')
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_PASS")
 EMAIL_USE_SSL = True
-DEFAULT_FROM_EMAIL= EMAIL_HOST_USER
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
