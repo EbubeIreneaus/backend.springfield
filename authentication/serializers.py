@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 class UserSerializ(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'username']
+        fields = ['first_name', 'last_name', 'username','email']
 
 class profileSerial(serializers.ModelSerializer):
     user = UserSerializ()

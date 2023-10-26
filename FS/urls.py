@@ -25,6 +25,7 @@ urlpatterns = [
     path('auth/', include('authentication.urls')),
     path('transaction/', include('transaction.urls')),
     path('account/', include('account.urls')),
+    path('contact/', include('contact.urls')),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 admin.site.site_header = 'My admin'

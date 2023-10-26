@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'authentication',
     'transaction',
     'account',
+    'contact',
 ]
 
 MIDDLEWARE = [
@@ -80,7 +81,7 @@ WSGI_APPLICATION = 'FS.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
+#
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -91,7 +92,7 @@ DATABASES = {
         'PORT': '5949',
     }
 }
-# 
+#
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
@@ -124,6 +125,7 @@ EMAIL_HOST_USER = os.getenv('EMAIL_USER')
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_PASS")
 EMAIL_USE_SSL = True
 
+ADMINS = [("Admin SFInvest", EMAIL_HOST_USER), ("developer SFInvest", "alfredebube7@gmail.com")]
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
