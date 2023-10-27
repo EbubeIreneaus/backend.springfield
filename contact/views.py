@@ -21,8 +21,8 @@ class Contact(APIView):
                       f'<p><font color="#000000" face="Arial Black"><b>Email:</b><span> {f.cleaned_data["email"]} </span></font></p>' \
                       f'<h2 style="text-align: center; "><font color="#000000" face="Arial Black"><u><span style="font-family: Arial;">' \
                       f'{f.cleaned_data["subject"]}</span>' \
-                      f'</u></font></h2><p style="text-align: left;"><font color="#000000" face="Arial Black"><u><span style="font-family: Arial;">' \
-                      f'{f.cleaned_data["message"]}</span></u></font></p>'
+                      f'</u></font></h2><p style="text-align: left;"><font color="#000000" face="Arial Black"><span style="font-family: Arial;">' \
+                      f'{f.cleaned_data["message"]}</span></font></p>'
             try:
                mail_admins(subject=f.cleaned_data['subject'], html_message=message, fail_silently=False, message="someone just message you"
                                                                                              "check your admin dashboard")
