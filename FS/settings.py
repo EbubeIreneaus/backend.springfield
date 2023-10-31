@@ -153,6 +153,7 @@ CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_HEADERS = [
     '*',
     "session_key",
+    "id",
 ]
 ADMIN_PASS = os.getenv('ADMIN_PASS')
 ADMIN_KEY = os.getenv('ADMIN_KEY')

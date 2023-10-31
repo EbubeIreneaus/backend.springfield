@@ -118,7 +118,7 @@ class Transactions(APIView):
         if updateTransactions(userId):
 
             try:
-                transactions = Transaction.objects.filter(profile__id=userId)
+                transactions = Transaction.objects.filter(profile__id=userId).order_by('-id')
                 st = ts(transactions, many=True)
                 return JsonResponse(st.data, safe=False)
             except Exception as e:

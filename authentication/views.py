@@ -61,6 +61,47 @@ def resend_link(request):
 	return JS({'status': 'success', 'userId': profile.id})
 
 @csrf_exempt
+def reset(request):
+	data = json.loads(request.body)
+	profile_id = request.headers.get('id')
+	try:
+		profile = Profile.objects.get(id=profile_id)
+		user = User.objects.get(id=profile.user.id)
+		user.set_password(data['password'])
+		user.save()
+		return JS({'status':'success'})
+	except Exception as e:
+		return JS({'status': 'failed', 'code':str(e)})
+
+def psreset_link(request):
+	username = request.GET.get('username', '')
+	try:
+		user = User.objects.get(username = username)
+		email = user.email
+		profile = Profile.objects.get(user__id = user.id)
+	except Exception as e:
+		return JS({'status': 'failed', 'code': str(e)})
+	try:
+		mail = Mail(subject="Password Reset")
+		mail.recipient = [email]
+		mail.html_message = '<div><div style="font-family: Arial, sans-serif;max-width: 600px;margin: 0 auto;' \
+							'padding: 20px;border: 1px solid #e9e9e9;border-radius: 5px;"><h2> Dear User,' \
+							' </h2 ><p>Thank you for investing with us. Please click on the link below ' \
+							'to reset your password:</p ><p><a href = "{link}"style = "display:' \
+							' inline-block;background-color: #4caf50;border: none;color: white;padding: 10px 20px;' \
+							'text-align: center;text-decoration: none;font-size: 16px;margin: 4px 2px;' \
+							'cursor: pointer;border-radius: 5px;">Reset Password</a></p ><p>' \
+							'If the button does not work, you can also copy and paste the following link into ' \
+							'your browser: </p ><p> {link} </p ><p> please disregard this email ' \
+							'if you did not request for password resetting</p></div>' \
+							'</div>'.format(link=f'https://springfieldinvest.com/auth/reset/{profile.id}')
+		mail.send_mail()
+	except Exception as e:
+		return HR(str(e))
+	return JS({'status': 'success'})
+
+
+@csrf_exempt
 def verify_account(request):
 	data = json.loads(request.body)
 	userId = data['key']
