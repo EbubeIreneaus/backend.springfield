@@ -150,3 +150,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_HEADERS = [
+    '*',
+    "session_key",
+]
+ADMIN_PASS = os.getenv('ADMIN_PASS')
+ADMIN_KEY = os.getenv('ADMIN_KEY')
