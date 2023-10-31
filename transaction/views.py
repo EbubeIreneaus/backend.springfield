@@ -10,7 +10,9 @@ import string
 from .serializers import transactionSerializer as ts
 from account.models import Account
 import re
-
+from django.db import transaction
+import datetime
+from django.utils import timezone
 class customException(Exception):
     pass
 
@@ -64,6 +66,27 @@ def validate_withdraw(amount, profileid, wallet_address):
     return {'status':'true'}
 
 
+def updateTransactions(userId):
+    try:
+        with transaction.atomic():
+            now = timezone.now()
+            ts = Transaction.objects.filter(profile__id=userId)
+            tplan = {'bronze':0.2,'silver':0.4,'gold':0.6,'estate':0.8,'pro':1}
+            for x in ts:
+                if now >= x.end_date and x.progress == 'active':
+                    trans = Transaction.objects.get(pk = x.pk)
+                    account = Account.objects.get(profile__id = trans.profile.id)
+                    earning = tplan[trans.plan] * trans.amount
+                    trans.progress = 'completed'
+                    account.balance += (trans.amount + earning)
+                    account.active_investment -= trans.amount
+                    account.Total_earnings += earning
+                    trans.save()
+                    account.save()
+    except Exception as e:
+        print(str(e))
+    return True
+
 class Transactions(APIView):
     def post(self, request):
         data = json.loads(request.body)
@@ -92,9 +115,11 @@ class Transactions(APIView):
 
     def get(self, request):
         userId = request.GET.get('userId')
-        try:
-            transactions = Transaction.objects.filter(profile__id=userId)
-            st = ts(transactions, many=True)
-            return JsonResponse(st.data, safe=False)
-        except Exception as e:
-            return HttpResponse(str(e))
+        if updateTransactions(userId):
+
+            try:
+                transactions = Transaction.objects.filter(profile__id=userId)
+                st = ts(transactions, many=True)
+                return JsonResponse(st.data, safe=False)
+            except Exception as e:
+                return HttpResponse(str(e))
