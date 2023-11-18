@@ -13,6 +13,8 @@ import re
 from django.db import transaction
 import datetime
 from django.utils import timezone
+import datetime
+import time
 class customException(Exception):
     pass
 
@@ -91,27 +93,40 @@ class Transactions(APIView):
     def post(self, request):
         data = json.loads(request.body)
         key = generateKey(30)
-
-        try:
+        now = datetime.datetime.now()
+        tplan = {'bronze': 24, 'silver': 48, 'gold': 72, 'estate': 48, 'pro': 96}
+        expires = datetime.datetime.fromtimestamp(time.time()+(60 * 60 * tplan[data['plan']]))
+        with transaction.atomic():
             try:
-                profile = Profile.objects.get(id=data['userId'])
-            except Profile.DoesNotExist:
-                return JsonResponse({'status': 'failed', 'code': 'user_not_found'})
-            if 'plan' in data:
-                if not validate_deposit(amount=data['amount'], plan=data['plan']):
-                    return JsonResponse({'status': 'failed', 'code': 'bad_data_integrity'})
+                try:
+                    profile = Profile.objects.get(id=data['userId'])
+                    account = Account.objects.select_for_update().get(profile__id = profile.id)
+                except Profile.DoesNotExist:
+                    return JsonResponse({'status': 'failed', 'code': 'user_not_found'})
+                if 'plan' in data:
+                    if not validate_deposit(amount=data['amount'], plan=data['plan']):
+                        return JsonResponse({'status': 'failed', 'code': 'bad_data_integrity'})
 
-                Transaction.objects.create(profile=profile, transact_id=key, plan=data['plan'], amount=data['amount'],
-                                           channel=data['channel'], type='deposit')
-            else:
-                validate = validate_withdraw(amount=data['amount'], profileid=profile.id, wallet_address=data['wallet'])
-                if validate['status'] != 'true':
-                    return JsonResponse({'status': 'failed', 'code':str(validate['code'])})
-                Transaction.objects.create(profile=profile, transact_id=key, amount=data['amount'],
-                                           channel=data['channel'], address=data['wallet'], type='withdraw')
-            return JsonResponse({'status': 'success'})
-        except Exception as e:
-            return JsonResponse({'status': 'failed', 'code': str(e)})
+                    if data['channel'] == 'balance' and account.balance > data['amount']:
+                        ts = Transaction(profile=profile, transact_id=key,plan=data['plan'], amount=data['amount'],
+                                         channel=data['channel'], type='deposit', status=1, progress='active',
+                                         start_date=now, end_date=expires)
+                        account.active_investment = float(account.active_investment) + float(data['amount'])
+                        account.balance = float(account.balance) - float(data['amount'])
+                        ts.save()
+                        account.save()
+                    else:
+                        Transaction.objects.create(profile=profile, transact_id=key, plan=data['plan'], amount=data['amount'],
+                                               channel=data['channel'], type='deposit')
+                else:
+                    validate = validate_withdraw(amount=data['amount'], profileid=profile.id, wallet_address=data['wallet'])
+                    if validate['status'] != 'true':
+                        return JsonResponse({'status': 'failed', 'code':str(validate['code'])})
+                    Transaction.objects.create(profile=profile, transact_id=key, amount=data['amount'],
+                                               channel=data['channel'], address=data['wallet'], type='withdraw')
+                return JsonResponse({'status': 'success'})
+            except Exception as e:
+                return JsonResponse({'status': 'failed', 'code': str(e)})
 
     def get(self, request):
         userId = request.GET.get('userId')
