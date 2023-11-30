@@ -107,7 +107,7 @@ class Transactions(APIView):
                     if not validate_deposit(amount=data['amount'], plan=data['plan']):
                         return JsonResponse({'status': 'failed', 'code': 'bad_data_integrity'})
 
-                    if data['channel'] == 'balance' and account.balance > data['amount']:
+                    if data['channel'] == 'balance' and account.balance >= data['amount']:
                         ts = Transaction(profile=profile, transact_id=key,plan=data['plan'], amount=data['amount'],
                                          channel=data['channel'], type='deposit', status=1, progress='active',
                                          start_date=now, end_date=expires)
@@ -115,7 +115,7 @@ class Transactions(APIView):
                         account.balance = float(account.balance) - float(data['amount'])
                         ts.save()
                         account.save()
-                    else:
+                    elif data['channel']== 'USDT' or data['channel']=='BTC':
                         Transaction.objects.create(profile=profile, transact_id=key, plan=data['plan'], amount=data['amount'],
                                                channel=data['channel'], type='deposit')
                 else:
