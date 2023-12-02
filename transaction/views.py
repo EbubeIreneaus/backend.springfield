@@ -86,7 +86,7 @@ def updateTransactions(userId):
                     trans.save()
                     account.save()
     except Exception as e:
-        print(str(e))
+        print(f'Could not update transaction {str(e)}')
     return True
 
 class Transactions(APIView):
