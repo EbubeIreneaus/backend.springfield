@@ -75,7 +75,7 @@ def updateTransactions(userId):
             ts = Transaction.objects.filter(profile__id=userId)
             tplan = {'bronze':0.2,'silver':0.4,'gold':0.6,'estate':0.8,'pro':1}
             for x in ts:
-                if now >= x.end_date and x.progress == 'active':
+                if  x.end_date is not None and now >= x.end_date and x.progress == 'active':
                     trans = Transaction.objects.get(pk = x.pk)
                     account = Account.objects.get(profile__id = trans.profile.id)
                     earning = tplan[trans.plan] * trans.amount
@@ -85,6 +85,8 @@ def updateTransactions(userId):
                     account.Total_earnings += earning
                     trans.save()
                     account.save()
+                else:
+                    print(x.end_date, 'is null')
     except Exception as e:
         print(f'Could not update transaction {str(e)}')
     return True
