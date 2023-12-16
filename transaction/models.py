@@ -42,11 +42,12 @@ def transaction_changed(instance_pk):
             profile_id = ts.profile.pk
             account = Account.objects.select_for_update().get(profile__id=profile_id)
             now = datetime.datetime.now()
-            tplan = {'bronze': 24, 'silver': 48, 'gold': 72, 'estate': 48, 'pro': 96}
-            expires = datetime.datetime.fromtimestamp(time.time() + (60 * 60 * tplan[ts.plan]))
+
             if ts.status == 1:
                 amount = ts.amount
                 if ts.type == 'deposit':
+                    tplan = {'bronze': 24, 'silver': 48, 'gold': 72, 'estate': 48, 'pro': 96}
+                    expires = datetime.datetime.fromtimestamp(time.time() + (60 * 60 * tplan[ts.plan]))
                     ts.start_date = now
                     ts.end_date = expires
                     ts.progress = 'active'
