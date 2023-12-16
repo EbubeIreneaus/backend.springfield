@@ -57,7 +57,7 @@ def transaction_changed(instance_pk):
                     account.save()
                 else:
                     account.last_withdraw = amount
-                    account.balance = account.balance + amount
+                    account.balance = account.balance - amount
                     ts.progress = 'completed'
                     account.save()
                     ts.save()
