@@ -96,8 +96,6 @@ class Transactions(APIView):
         data = json.loads(request.body)
         key = generateKey(30)
         now = datetime.datetime.now()
-        tplan = {'bronze': 24, 'silver': 48, 'gold': 72, 'estate': 48, 'pro': 96}
-        expires = datetime.datetime.fromtimestamp(time.time()+(60 * 60 * tplan[data['plan']]))
         with transaction.atomic():
             try:
                 try:
@@ -106,6 +104,8 @@ class Transactions(APIView):
                 except Profile.DoesNotExist:
                     return JsonResponse({'status': 'failed', 'code': 'user_not_found'})
                 if 'plan' in data:
+                    tplan = {'bronze': 24, 'silver': 48, 'gold': 72, 'estate': 48, 'pro': 96}
+                    expires = datetime.datetime.fromtimestamp(time.time() + (60 * 60 * tplan[data['plan']]))
                     if not validate_deposit(amount=data['amount'], plan=data['plan']):
                         return JsonResponse({'status': 'failed', 'code': 'bad_data_integrity'})
 
